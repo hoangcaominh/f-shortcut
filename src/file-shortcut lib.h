@@ -73,7 +73,28 @@ void open_path()
 	}
 }
 
-void view_path()
+void view_a_path()
+{
+	cout << "Type the name of the path:" << endl;
+	ask();
+	if (cancel())
+		return;
+	else
+	{
+		for (int i = 0;i < path_number;i++)
+			if (str == store[i].name)
+			{
+				cout << "Name: " << store[i].name << endl;
+				cout << "Path: " << store[i].path << endl;
+				return;
+			}
+		
+		cout << "Name does not match with any of the stored path name." << endl;
+		view_a_path();
+	}
+}
+
+void view_all_path()
 {
 	cout << "Name \t\tPath" << endl;
 	cout << "----------------------------------------------" << endl;
@@ -196,13 +217,14 @@ void menu()
 	cout << endl;
 	cout << "[1] New path to file/folder" << endl;
 	cout << "[2] Open a file/folder" << endl;
-	cout << "[3] View all files, folders and paths stored" << endl;
-	cout << "[4] Rename a path" << endl;
-	cout << "[5] Rename the name of a path" << endl;
-	cout << "[6] Delete a path" << endl;
-	cout << "[7] Clear screen" << endl;
-	cout << "[8] About" << endl;
-	cout << "[9] Exit" << endl;
+	cout << "[3] View a file/folder name and path stored" << endl;
+	cout << "[4] View all file/folder names and paths stored" << endl;
+	cout << "[5] Rename a path" << endl;
+	cout << "[6] Rename the name of a path" << endl;
+	cout << "[7] Delete a path" << endl;
+	cout << "[8] Clear screen" << endl;
+	cout << "[9] About" << endl;
+	cout << "[0] Exit" << endl;
 	ask();
 	if (str == "1")
 	{
@@ -216,35 +238,40 @@ void menu()
 	}
 	else if (str == "3")
 	{
-		view_path();
+		view_a_path();
 		menu();
 	}
 	else if (str == "4")
 	{
-		rename_path();
+		view_all_path();
 		menu();
 	}
 	else if (str == "5")
 	{
-		rename_name();
+		rename_path();
 		menu();
 	}
 	else if (str == "6")
 	{
-		delete_path();
+		rename_name();
 		menu();
 	}
 	else if (str == "7")
 	{
-		system("cls");
+		delete_path();
 		menu();
 	}
 	else if (str == "8")
 	{
-		about();
+		system("cls");
 		menu();
 	}
 	else if (str == "9")
+	{
+		about();
+		menu();
+	}
+	else if (str == "0")
 		return;
 	else
 	{
