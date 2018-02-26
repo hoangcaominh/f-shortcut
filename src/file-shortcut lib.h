@@ -60,11 +60,11 @@ void open_path()
 			if (str == store[i].name)
 			{
 				cout << "Name match." << endl;
-				cout << "Opening...";
+				cout << "Opening..." << endl;
 				
 				string cmd = "start \"\" \"" + store[i].path + "\"";
 				system(cmd.data());
-				cout << endl << "Open succeeded." << endl;
+				
 				return;
 			}
 			
@@ -73,7 +73,7 @@ void open_path()
 	}
 }
 
-void view_a_path()
+void search_a_path()
 {
 	cout << "Type the name of the path:" << endl;
 	ask();
@@ -90,17 +90,25 @@ void view_a_path()
 			}
 		
 		cout << "Name does not match with any of the stored path name." << endl;
-		view_a_path();
+		search_a_path();
 	}
 }
 
 void view_all_path()
 {
-	cout << "Name \t\tPath" << endl;
+	cout << "Name \t\t\tPath" << endl;
 	cout << "----------------------------------------------" << endl;
 	
 	for (int i = 0;i < current_path_number;i++)
-		cout << store[i].name << "\t\t" << store[i].path << endl;
+	{
+		cout << "|" << store[i].name;
+		if (store[i].name.length() < 8 - 1)
+			cout << "\t\t\t";
+		else
+			cout << "\t\t";
+			
+		cout << store[i].path << endl;
+	}
 	cout << "Total: " << current_path_number << "/" << path_number << endl;
 }
 
@@ -217,7 +225,7 @@ void menu()
 	cout << endl;
 	cout << "[1] New path to file/folder" << endl;
 	cout << "[2] Open a file/folder" << endl;
-	cout << "[3] View a file/folder name and path stored" << endl;
+	cout << "[3] Search a file/folder name and path stored" << endl;
 	cout << "[4] View all file/folder names and paths stored" << endl;
 	cout << "[5] Rename a path" << endl;
 	cout << "[6] Rename the name of a path" << endl;
@@ -238,7 +246,7 @@ void menu()
 	}
 	else if (str == "3")
 	{
-		view_a_path();
+		search_a_path();
 		menu();
 	}
 	else if (str == "4")
