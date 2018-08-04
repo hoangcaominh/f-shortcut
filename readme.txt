@@ -1,1 +1,0 @@
-Read about in the application

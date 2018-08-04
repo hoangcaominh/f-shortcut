@@ -1,0 +1,35 @@
+#ifndef _resource_rc
+#define _resource_rc
+
+#include <winver.h>
+
+fIcon ICON "Software.ico"
+
+1 VERSIONINFO
+FILEVERSION 1,0,14,292
+PRODUCTVERSION 1,0,14,292
+FILETYPE VFT_APP
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        {
+            VALUE "Build", "June 2018"
+            VALUE "CompanyName", ""
+            VALUE "FileVersion", "1.0.14.292"
+            VALUE "FileDescription", "F-shortcut"
+            VALUE "InternalName", "file-shortcut"
+            VALUE "LegalCopyright", "Hoang Cao Minh Creative Apps"
+            VALUE "LegalTrademarks", "Hoang Cao Minh Mini-console App Collection"
+            VALUE "OriginalFilename", "File-shortcut"
+            VALUE "ProductName", "F-shortcut"
+            VALUE "ProductVersion", "1.0.14.292"
+        }
+    }
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252
+    }
+}
+
+#endif // _resource_rc
