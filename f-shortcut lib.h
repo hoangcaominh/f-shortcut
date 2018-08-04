@@ -1,6 +1,9 @@
-//#include <iostream>
+#include <iostream>
 #include <windows.h>
 #include "f-shortcut algor.h"
+
+#define max_name_length 14
+#define max_path_length_shown 66
 
 string str;
 
@@ -34,19 +37,29 @@ void new_path()
 	{
 		string temp_path = str;
 
-		cout << "Type the name of the path:" << endl;
-		ask();
-		if (cancel())
-			return;
-		else
-		{
-			store[current_path_number].path = temp_path;
-			store[current_path_number].name = str;
+		while(true)
+        {
+            cout << "Type the name of the path:" << endl;
+            ask();
+            if (cancel())
+                return;
+            else if (str.length() > max_name_length) // name that longer than 14 chars is invalid
+            {
+                cout << "Name shouldn't have more than 14 characters. Please rename." << endl;
+            }
+            else
+            {
+                store[current_path_number].path = temp_path;
+                store[current_path_number].name = str;
 
-			align();
+                align();
 
-			save_path();
-		}
+                save_path();
+                cout << "Successfully added a new path." << endl;
+
+                break;
+            }
+        }
 	}
 }
 
@@ -99,6 +112,29 @@ void search_a_path()
 }
 
 // 4 //
+void view_all_path()
+{
+	cout << "Name \t\t\tPath" << endl;
+	cout << "----------------------------------------------" << endl;
+
+	for (int i = 0;i < current_path_number;i++)
+	{
+		cout << "|" << store[i].name;
+		if (store[i].name.length() < 8 - 1)
+			cout << "\t\t\t";
+		else
+			cout << "\t\t";
+
+        // if the path length is longer than 66, the latter part is replaced with ...
+        if (store[i].path.length() > max_path_length_shown)
+            cout << store[i].path.substr(0, max_path_length_shown) << "..." << endl;
+        else
+            cout << store[i].path << endl;
+	}
+	cout << "Total: " << current_path_number << "/" << path_number << endl;
+}
+
+// 5 //
 void search_internet()
 {
     cout << "(Supported search engine: Google, Bing, Coc Coc)" << endl;
@@ -124,25 +160,6 @@ void search_internet()
             search_internet();
         }
     }
-}
-
-// 5 //
-void view_all_path()
-{
-	cout << "Name \t\t\tPath" << endl;
-	cout << "----------------------------------------------" << endl;
-
-	for (int i = 0;i < current_path_number;i++)
-	{
-		cout << "|" << store[i].name;
-		if (store[i].name.length() < 8 - 1)
-			cout << "\t\t\t";
-		else
-			cout << "\t\t";
-
-		cout << store[i].path << endl;
-	}
-	cout << "Total: " << current_path_number << "/" << path_number << endl;
 }
 
 // 6 //
@@ -192,20 +209,29 @@ void rename_name()
 			if (str == store[i].name)
 			{
 				cout << "Name match." << endl;
-				cout << "Type the renamed name:" << endl;
-				ask();
-				if (cancel())
-					return;
-				else
-				{
-					store[i].name = str;
 
-					align();
-					save_path();
+				while(true)
+                {
+                    cout << "Type the renamed name:" << endl;
+                    ask();
 
-					cout << "Rename succeeded." << endl;
-					return;
-				}
+                    if (cancel())
+                        return;
+                    else if (str.length() > max_name_length)
+                    {
+                        cout << "Name shouldn't have more than 14 characters. Please rename." << endl;
+                    }
+                    else
+                    {
+                        store[i].name = str;
+
+                        align();
+                        save_path();
+
+                        cout << "Successfully renamed path." << endl;
+                        return;
+                    }
+                }
 			}
 
 		cout << "Name does not match with any of the stored path name." << endl;
@@ -234,7 +260,7 @@ void delete_path()
 				align();
 				save_path();
 
-				cout << endl << "Delete succeeded." << endl;
+				cout << endl << "Successfully deleted path." << endl;
 				return;
 			}
 
@@ -266,9 +292,9 @@ void menu()
 	cout << endl;
 	cout << "[1] New path to file/folder" << endl;
 	cout << "[2] Open a file/folder" << endl;
-	cout << "[3] Search a file/folder name and path stored" << endl;
-	cout << "[4] Search the Internet" << endl;
-	cout << "[5] View all file/folder names and paths stored" << endl;
+	cout << "[3] View a file/folder name and path stored" << endl;
+	cout << "[4] View all file/folder names and paths stored" << endl;
+	cout << "[5] Search the Internet" << endl;
 	cout << "[6] Rename a path" << endl;
 	cout << "[7] Rename the name of a path" << endl;
 	cout << "[8] Delete a path" << endl;
@@ -292,12 +318,12 @@ void menu()
     }
 	else if (str == "4")
 	{
-        search_internet();
+		view_all_path();
 		menu();
 	}
 	else if (str == "5")
 	{
-		view_all_path();
+        search_internet();
 		menu();
 	}
 	else if (str == "6")

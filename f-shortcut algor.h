@@ -1,8 +1,7 @@
 #include <string>
 #include <fstream>
-#define path_number 2000
 
-#include <iostream>
+#define path_number 2000
 using namespace std;
 
 int current_path_number;
