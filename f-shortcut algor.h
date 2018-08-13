@@ -1,5 +1,6 @@
-#include <string>
+#include <iostream>
 #include <fstream>
+#include <string>
 
 #define path_number 2000
 using namespace std;
@@ -74,6 +75,9 @@ void scan_path()
 	fstream f;
 	f.open("data.dat", ios::in);
 
+	// loading file
+	cout << endl;
+	cout << "Loading file..." << endl;
 	while (!f.eof())
 	{
 		getline(f, store[i].name);
@@ -81,11 +85,25 @@ void scan_path()
 
 		if (!store[i].name.empty() && !store[i].name.empty())
 			i++;
+
+        // maximum amount of shortcuts exception
+        if (i >= path_number)
+        {
+            cout << "The amount of shortcuts has reached the maximum number, stopped loading." << endl;
+            f.close();
+
+            current_path_number = i;
+            align();
+            return;
+        }
 	}
 	f.close();
 
 	current_path_number = i;
 	align();
+
+	// finishing loading
+	cout << "Successully loaded file." << endl;
 }
 
 void save_path()
@@ -101,6 +119,14 @@ void save_path()
 		}
 
 	f.close();
+}
+
+bool already_exist(string s)
+{
+    for (int i = 0;i < current_path_number;i++)
+        if (store[i].name == s)
+            return true;
+    return false;
 }
 
 // specified for search_internet()

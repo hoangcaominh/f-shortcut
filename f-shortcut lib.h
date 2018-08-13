@@ -1,4 +1,3 @@
-#include <iostream>
 #include <windows.h>
 #include "f-shortcut algor.h"
 
@@ -29,6 +28,14 @@ void ask()
 // 1 //
 void new_path()
 {
+    // catch shortcuts overflowing
+    if (current_path_number >= path_number)
+    {
+        cout << "The amount of shortcuts has reached the maximum number, function aborted." << endl;
+        cout << "Delete one or more unnecessary paths to continue." << endl;
+        return;
+    }
+
 	cout << "Type the path of the file/folder:" << endl;
 	ask();
 	if (cancel())
@@ -47,6 +54,10 @@ void new_path()
             {
                 cout << "Name shouldn't have more than 14 characters. Please rename." << endl;
             }
+            else if (already_exist(str))
+            {
+                cout << "This name has already existed. Please rename or delete the existed one."  << endl;
+            }
             else
             {
                 store[current_path_number].path = temp_path;
@@ -55,7 +66,7 @@ void new_path()
                 align();
 
                 save_path();
-                cout << "Successfully added a new path." << endl;
+                cout << "Successfully added new path." << endl;
 
                 break;
             }
@@ -151,12 +162,14 @@ void search_internet()
             cout << "Search:" << endl;
             ask();
 
+            // start searching
+            cout << "Searching for: " << str << "..." << endl;
             string cmd = "start \"\" \"" + search_url(SearchEngine, str) + "\"";
             system(cmd.data());
         }
         else
         {
-            cout << "Search engine is not either available or supported." << endl;
+            cout << "Search engine is either not available or not supported." << endl;
             search_internet();
         }
     }
@@ -186,7 +199,7 @@ void rename_path()
 					align();
 					save_path();
 
-					cout << "Rename succeeded." << endl;
+					cout << "Successfully renamed path name." << endl;
 					return;
 				}
 			}
@@ -220,6 +233,10 @@ void rename_name()
                     else if (str.length() > max_name_length)
                     {
                         cout << "Name shouldn't have more than 14 characters. Please rename." << endl;
+                    }
+                    else if (already_exist(str))
+                    {
+                        cout << "This name has already existed. Please rename or delete the existed one."  << endl;
                     }
                     else
                     {
@@ -285,10 +302,10 @@ void about()
 
 void menu()
 {
-	scan_path();
+    scan_path();
 
 	cout << endl;
-	cout << "\"<cancel>\" to cancel any input, except in the menu and Internet search" << endl;
+	cout << "\"<cancel>\" to cancel any input, except in the menu and Internet search." << endl;
 	cout << endl;
 	cout << "[1] New path to file/folder" << endl;
 	cout << "[2] Open a file/folder" << endl;
@@ -298,7 +315,7 @@ void menu()
 	cout << "[6] Rename a path" << endl;
 	cout << "[7] Rename the name of a path" << endl;
 	cout << "[8] Delete a path" << endl;
-	cout << "[9] Clear screen" << endl;\
+	cout << "[9] Clear screen and reload file" << endl;
 	cout << "[0] Exit" << endl;
 	ask();
 	if (str == "1")
@@ -344,10 +361,11 @@ void menu()
 	else if (str == "9")
 	{
 		system("cls");
+		scan_path();
 		menu();
 	}
 	else if (str == "0")
-		return;
+        return;
 	else
 	{
 		cout << "\"" << str << "\"" << "is not recognized as a command." << endl;
