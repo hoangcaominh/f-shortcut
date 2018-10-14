@@ -9,9 +9,12 @@ string str;
 bool cancel()
 {
 	if (str == "<cancel>")
+    {
+        cout << "Action aborted. Returning to main menu..." << endl;
 		return true;
-	else
-		return false;
+    }
+
+    return false;
 }
 
 void ask()
@@ -52,7 +55,7 @@ void new_path()
                 return;
             else if (str.length() > max_name_length) // name that longer than 14 chars is invalid
             {
-                cout << "Name shouldn't have more than 14 characters. Please rename." << endl;
+                cout << "Name must not have more than 14 characters. Please rename." << endl;
             }
             else if (already_exist(str))
             {
@@ -232,7 +235,7 @@ void rename_name()
                         return;
                     else if (str.length() > max_name_length)
                     {
-                        cout << "Name shouldn't have more than 14 characters. Please rename." << endl;
+                        cout << "Name must not have more than 14 characters. Please rename." << endl;
                     }
                     else if (already_exist(str))
                     {
@@ -315,7 +318,7 @@ void menu()
 	cout << "[6] Rename a path" << endl;
 	cout << "[7] Rename the name of a path" << endl;
 	cout << "[8] Delete a path" << endl;
-	cout << "[9] Clear screen and reload file" << endl;
+	cout << "[9] Clear history" << endl;
 	cout << "[0] Exit" << endl;
 	ask();
 	if (str == "1")
@@ -361,7 +364,6 @@ void menu()
 	else if (str == "9")
 	{
 		system("cls");
-		scan_path();
 		menu();
 	}
 	else if (str == "0")

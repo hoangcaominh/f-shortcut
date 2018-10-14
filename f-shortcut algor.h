@@ -77,7 +77,7 @@ void scan_path()
 
 	// loading file
 	cout << endl;
-	cout << "Loading file..." << endl;
+	cout << "Loading/Updating file..." << endl;
 	while (!f.eof())
 	{
 		getline(f, store[i].name);
