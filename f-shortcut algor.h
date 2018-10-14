@@ -1,16 +1,18 @@
-#include <iostream>
-#include <fstream>
 #include <string>
+#include <fstream>
+#include <algorithm>
 
-#define path_number 2000
+#define max_path_number 2000
 using namespace std;
 
 int current_path_number;
+int current_cate_number;
 
 struct dir
 {
-	string name, path;
-}	store[path_number];
+	string name, path, category;
+}	store[max_path_number];
+string category_list[max_path_number];
 
 int compare_no_capital(string s1, string s2)
 {
@@ -38,8 +40,10 @@ int compare_no_capital(string s1, string s2)
         return 0;
 }
 
+// compare between 2 path names
 void align()
 {
+    /* unnecessary code
 	for (int i = 0;i < path_number - 1;i++)
 	{
 		for (int j = i+1;j < path_number;j++)
@@ -53,7 +57,7 @@ void align()
 		  	}
 		}
 	}
-
+    */
 	for (int i = 0;i < current_path_number - 1;i++)
 	{
 		for (int j = i+1;j < current_path_number;j++)
@@ -67,13 +71,46 @@ void align()
 		  	}
 		}
 	}
+
+	sort(category_list, category_list + current_cate_number);
+}
+
+// compare used for binary search
+bool compare(string s1, string s2)
+{
+	string ss1 = "", ss2 = "";
+
+	for (unsigned int i = 0;i < s1.length();i++)
+		if (s1[i] >= 65 && s1[i] <= 90)
+			ss1 += char(s1[i] + 32);
+		else
+			ss1 += s1[i];
+
+	for (unsigned int i = 0;i < s2.length();i++)
+		if (s2[i] >= 65 && s2[i] <= 90)
+			ss2 += char(s2[i] + 32);
+		else
+			ss2 += s2[i];
+
+    return ss1 < ss2;
 }
 
 void scan_path()
 {
-	int i = 0;
+	unsigned int i = 0;
+	unsigned int j = 0;
 	fstream f;
 	f.open("data.dat", ios::in);
+
+	if (f.fail())
+    {
+        f.open("data.dat", ios::out);
+        f.close();
+
+        cout << endl;
+        cout << "File not found, created a new one." << endl;
+        return;
+    }
 
 	// loading file
 	cout << endl;
@@ -82,17 +119,32 @@ void scan_path()
 	{
 		getline(f, store[i].name);
 		getline(f, store[i].path);
+		getline(f, store[i].category);
 
-		if (!store[i].name.empty() && !store[i].name.empty())
+		if (!store[i].name.empty() && !store[i].path.empty() && !store[i].category.empty())
+        {
+            // add categories to a separate array
+            unsigned int _i;
+            for (_i = 0; _i < j; _i++)
+                if (category_list[_i] == store[i].category)
+                    break;
+            if (_i == j)
+            {
+                category_list[j] = store[i].category;
+                j++;
+            }
+
 			i++;
+        }
 
         // maximum amount of shortcuts exception
-        if (i >= path_number)
+        if (i >= max_path_number)
         {
             cout << "The amount of shortcuts has reached the maximum number, stopped loading." << endl;
             f.close();
 
             current_path_number = i;
+            current_cate_number = j;
             align();
             return;
         }
@@ -100,6 +152,7 @@ void scan_path()
 	f.close();
 
 	current_path_number = i;
+    current_cate_number = j;
 	align();
 
 	// finishing loading
@@ -110,13 +163,12 @@ void save_path()
 {
 	fstream f;
 	f.open("data.dat", ios::out);
-	for (int i = 0;i < path_number;i++)
-		if (!store[i].name.empty() && !store[i].path.empty())
-		{
-			f << store[i].name << endl << store[i].path;
-			if (i != path_number - 1)
-				f << endl;
-		}
+	for (int i = 0;i < max_path_number;i++)
+    {
+        f << store[i].name << endl << store[i].path << endl << store[i].category;
+        if (i != max_path_number - 1)
+            f << endl;
+    }
 
 	f.close();
 }
