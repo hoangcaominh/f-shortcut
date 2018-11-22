@@ -8,17 +8,17 @@ int main()
     {
         scan_path();
 
-        cout << endl;
-        cout << "\"<cancel>\" to cancel any input, except in the menu/submenu and Internet search" << endl;
-        cout << endl;
-        cout << "[1] New path to file/folder" << endl;
-        cout << "[2] Open a file/folder" << endl;
-        cout << "[3] View an element" << endl;
-        cout << "[4] Rename an element" << endl;
-        cout << "[5] Delete an element" << endl;
-        cout << "[6] Search the Internet" << endl;
-        cout << "[7] Clear history" << endl;
-        cout << "[0] Exit" << endl;
+        std::cout << std::endl;
+        std::cout << "\"<cancel>\" to cancel any input, except in the menu/submenu and Internet search" << std::endl;
+        std::cout << std::endl;
+        std::cout << "[1] New path to file/folder" << std::endl;
+        std::cout << "[2] Open a file/folder" << std::endl;
+        std::cout << "[3] View submenu" << std::endl;
+        std::cout << "[4] Rename submenu" << std::endl;
+        std::cout << "[5] Delete submenu" << std::endl;
+        std::cout << "[6] Search the Internet" << std::endl;
+        std::cout << "[7] Clear history" << std::endl;
+        std::cout << "[0] Exit" << std::endl;
         ask();
         if (str == "1")
         {
@@ -52,11 +52,8 @@ int main()
             _menu = false;
         else
         {
-            cout << "\"" << str << "\"" << "is not recognized as a command." << endl;
+            std::cout << "\"" << str << "\"" << "is not recognized as a command." << std::endl;
         }
     }
 	return 0;
 }
-
-// Task:
-// Create a structure (array, struct, ...) to store sorted categories

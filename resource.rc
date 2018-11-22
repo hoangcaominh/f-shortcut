@@ -6,8 +6,8 @@
 fIcon ICON "Software.ico"
 
 1 VERSIONINFO
-FILEVERSION 1,1,15,352
-PRODUCTVERSION 1,1,15,352
+FILEVERSION 1,2,15,385
+PRODUCTVERSION 1,2,15,385
 FILETYPE VFT_APP
 {
     BLOCK "StringFileInfo"
@@ -16,14 +16,14 @@ FILETYPE VFT_APP
         {
             VALUE "Build", "June 2018"
             VALUE "CompanyName", ""
-            VALUE "FileVersion", "1.1.15.352"
+            VALUE "FileVersion", "1.1.15.365"
             VALUE "FileDescription", "F-shortcut"
             VALUE "InternalName", "file-shortcut"
             VALUE "LegalCopyright", "Hoang Cao Minh Creative Apps"
             VALUE "LegalTrademarks", "Hoang Cao Minh Mini-console App Collection"
             VALUE "OriginalFilename", "File-shortcut"
             VALUE "ProductName", "F-shortcut"
-            VALUE "ProductVersion", "1.1.15.352"
+            VALUE "ProductVersion", "1.1.15.365"
         }
     }
     BLOCK "VarFileInfo"

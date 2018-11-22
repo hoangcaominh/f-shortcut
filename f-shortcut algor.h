@@ -1,92 +1,29 @@
 #include <string>
+#include <vector>
 #include <fstream>
 #include <algorithm>
+#include <json.hpp>
+
+#define DEBUG std::cout << "debug" << std::endl;
 
 #define max_path_number 2000
-using namespace std;
+using json = nlohmann::json;
 
-int current_path_number;
-int current_cate_number;
+std::vector<std::string> tag_list;
 
-struct dir
+json data;
+
+bool string_compare(std::string s1, std::string s2)
 {
-	string name, path, category;
-}	store[max_path_number];
-string category_list[max_path_number];
+	std::string ss1 = "", ss2 = "";
 
-int compare_no_capital(string s1, string s2)
-{
-	string ss1 = "", ss2 = "";
-
-	for (unsigned int i = 0;i < s1.length();i++)
+	for (size_t i = 0;i < s1.length();i++)
 		if (s1[i] >= 65 && s1[i] <= 90)
 			ss1 += char(s1[i] + 32);
 		else
 			ss1 += s1[i];
 
-	for (unsigned int i = 0;i < s2.length();i++)
-		if (s2[i] >= 65 && s2[i] <= 90)
-			ss2 += char(s2[i] + 32);
-		else
-			ss2 += s2[i];
-
-	if (ss1.empty())
-		return -2;
-	else if (ss1 < ss2)
-		return -1;
-	else if (ss1 > ss2)
-		return 1;
-    else
-        return 0;
-}
-
-// compare between 2 path names
-void align()
-{
-    /* unnecessary code
-	for (int i = 0;i < path_number - 1;i++)
-	{
-		for (int j = i+1;j < path_number;j++)
-		{
-		   	// if (store[i].name.compare(store[j].name) == 1 || store[i].name.empty())
-			if (compare_no_capital(store[i].name, store[j].name) == -2)
-		  	{
-				dir k = store[i];
-	            store[i] = store[j];
-	            store[j] = k;
-		  	}
-		}
-	}
-    */
-	for (int i = 0;i < current_path_number - 1;i++)
-	{
-		for (int j = i+1;j < current_path_number;j++)
-		{
-		   	// if (store[i].name.compare(store[j].name) == 1 || store[i].name.empty())
-			if (compare_no_capital(store[i].name, store[j].name) == 1)
-		  	{
-				dir k = store[i];
-	            store[i] = store[j];
-	            store[j] = k;
-		  	}
-		}
-	}
-
-	sort(category_list, category_list + current_cate_number);
-}
-
-// compare used for binary search
-bool compare(string s1, string s2)
-{
-	string ss1 = "", ss2 = "";
-
-	for (unsigned int i = 0;i < s1.length();i++)
-		if (s1[i] >= 65 && s1[i] <= 90)
-			ss1 += char(s1[i] + 32);
-		else
-			ss1 += s1[i];
-
-	for (unsigned int i = 0;i < s2.length();i++)
+	for (size_t i = 0;i < s2.length();i++)
 		if (s2[i] >= 65 && s2[i] <= 90)
 			ss2 += char(s2[i] + 32);
 		else
@@ -95,88 +32,85 @@ bool compare(string s1, string s2)
     return ss1 < ss2;
 }
 
+void string_fix(std::string &s)
+{
+    for (size_t i = 0;i < s.length();i++)
+        if (s[i] == '\\')
+            s[i] = '/';
+}
+
+// main functions
+
+// string_compare between 2 path names
+void align()
+{
+	for (size_t i = 0;i < data.size() - 1;i++)
+	{
+		for (size_t j = i+1;j < data.size();j++)
+		{
+		   	// if (data[i]["Name"].get<std::string>().string_compare(data[j].name) == 1 || data[i]["Name"].get<std::string>().empty())
+			//DEBUG
+			if (!string_compare(data[i]["Name"].get<std::string>(), data[j]["Name"].get<std::string>()))
+		  	{
+		  	    data[i].swap(data[j]);
+		  	}
+		}
+	}
+
+	std::sort(tag_list.begin(), tag_list.end(), string_compare);
+}
+
 void scan_path()
 {
-	unsigned int i = 0;
-	unsigned int j = 0;
-	fstream f;
-	f.open("data.dat", ios::in);
+	std::fstream f("data.json", std::ios::in);
 
 	if (f.fail())
     {
-        f.open("data.dat", ios::out);
+        std::fstream f("data.json", std::ios::out);
         f.close();
 
-        cout << endl;
-        cout << "File not found, created a new one." << endl;
+        std::cout << std::endl;
+        std::cout << "File not found, created a new one." << std::endl;
         return;
     }
 
 	// loading file
-	cout << endl;
-	cout << "Loading/Updating file..." << endl;
-	while (!f.eof())
-	{
-		getline(f, store[i].name);
-		getline(f, store[i].path);
-		getline(f, store[i].category);
+	std::cout << std::endl;
+	std::cout << "Loading/Updating file..." << std::endl;
 
-		if (!store[i].name.empty() && !store[i].path.empty() && !store[i].category.empty())
-        {
-            // add categories to a separate array
-            unsigned int _i;
-            for (_i = 0; _i < j; _i++)
-                if (category_list[_i] == store[i].category)
-                    break;
-            if (_i == j)
-            {
-                category_list[j] = store[i].category;
-                j++;
-            }
+	f >> data;
 
-			i++;
-        }
-
-        // maximum amount of shortcuts exception
-        if (i >= max_path_number)
-        {
-            cout << "The amount of shortcuts has reached the maximum number, stopped loading." << endl;
-            f.close();
-
-            current_path_number = i;
-            current_cate_number = j;
-            align();
-            return;
-        }
-	}
 	f.close();
 
-	current_path_number = i;
-    current_cate_number = j;
-	align();
+	// add tags to tag_list
+	for (size_t i = 0;i < data.size();i++)
+    {
+        std::string tag = data[i]["Tags"][0].get<std::string>();
+        if (!std::binary_search(tag_list.begin(), tag_list.end(), tag, string_compare))
+        {
+            tag_list.push_back(tag);
+            std::sort(tag_list.begin(), tag_list.end(), string_compare);
+        }
+    }
+    align();
 
 	// finishing loading
-	cout << "Successully loaded file." << endl;
+	std::cout << "Successully loaded file." << std::endl;
 }
 
 void save_path()
 {
-	fstream f;
-	f.open("data.dat", ios::out);
-	for (int i = 0;i < max_path_number;i++)
-    {
-        f << store[i].name << endl << store[i].path << endl << store[i].category;
-        if (i != max_path_number - 1)
-            f << endl;
-    }
+	std::fstream f("data.json", std::ios::out);
+
+	f << data;
 
 	f.close();
 }
 
-bool already_exist(string s)
+bool already_exist(std::string s)
 {
-    for (int i = 0;i < current_path_number;i++)
-        if (store[i].name == s)
+    for (size_t i = 0;i < data.size();i++)
+        if (data[i]["Name"].get<std::string>() == s)
             return true;
     return false;
 }
@@ -187,12 +121,12 @@ bool already_exist(string s)
 struct url_symbol_list
 {
     char symbol;
-    string id;
+    std::string id;
 } url_symbol[url_symbol_number] = { {' ', "%20"}, {'+', "%2B"}, {'%', "%25"}, {'#', "%23"}, {'&', "%26"}, {'\'', "%27"},
                                     {',', "%2C"}, {'.', "%2E"}, {'/', "%2F"}, {':', "%3A"}, {';', "%3B"}, {'<', "%3C"},
                                     {'=', "&3D"}, {'>', "%3E"} };
 
-string query_convert(string query)
+std::string query_convert(std::string query)
 {
     unsigned int i = 0;
     while (i < query.length())
@@ -214,9 +148,9 @@ string query_convert(string query)
     return query;
 }
 
-string search_url(string engine, string query)
+std::string search_url(std::string engine, std::string query)
 {
-    string url = query_convert(query);
+    std::string url = query_convert(query);
 
     // finalize url
     if (engine == "Google")
