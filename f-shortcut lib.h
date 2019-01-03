@@ -3,7 +3,7 @@
 #include "f-shortcut algor.h"
 
 #define max_name_length 13
-#define max_path_length_shown 43
+#define max_path_length_shown 66
 #define max_tag_length 13
 
 std::string str;
@@ -33,7 +33,7 @@ void ask()
 	}
 }
 
-// 1 //
+// 1.1 //
 void new_path()
 {
 	std::cout << "Type the path of the file/folder:" << std::endl;
@@ -64,33 +64,72 @@ void new_path()
                 break;
             }
         }
-		std::string temp_name = str;
 
-		while (true)
-        {
-            std::cout << "Type the path tag (no tag should use (none)):" << std::endl;
-            ask();
-            if (cancel())
-                return;
-            else if (str.length() > max_tag_length) // tag that longer than 10 chars is invalid
-            {
-                std::cout << "Tag name shouldn't have more than 13 characters. Please rename." << std::endl;
-            }
-            else
-            {
-                data[data.size()]["Name"] = temp_name;
-                data[data.size() - 1]["Path"] = temp_path;
-                data[data.size() - 1]["Tags"][0] = str;
+        data[data.size()]["Name"] = str;
+        data[data.size() - 1]["Path"] = temp_path;
 
-                align();
+        align();
 
-                save_path();
-                std::cout << "Successfully added a new path." << std::endl;
-
-                break;
-            }
-        }
+        save_path();
+        std::cout << "Successfully added a new path." << std::endl;
+        std::cout << "You can add tags to this path with the Add new tag function." << std::endl;
 	}
+}
+
+// 1.2 //
+void new_tag()
+{
+    std::cout << "Type the name of the path:" << std::endl;
+    ask();
+    if (cancel())
+        return;
+    else
+    {
+		for (size_t i = 0;i < data.size();i++)
+			if (str == data[i]["Name"])
+			{
+			    std::string temp_name = str;
+				std::cout << "Name match." << std::endl;
+				std::cout << "Add a new tag (stop adding with <end> tag):" << std::endl;
+                while (true)
+                {
+                    ask();
+                    if (cancel())
+                        return;
+                    else if (str == "<end>")
+                    {
+                        std::cout << "Stopped adding. Returning to main menu..." << std::endl;
+                        return;
+                    }
+                    else
+                    {
+                        json &tags = data[i]["Tags"];
+                        json::iterator found = std::find(tags.begin(), tags.end(), str);
+                        if (found == tags.end())
+                        {
+                            if (tags.size() == 1 && tags[0] == "(none)")
+                            {
+                                // Remove tag (none) for new tag
+                                tags.erase(0);
+                            }
+                            tags[tags.size()] = str;
+
+                            align();
+                            save_path();
+
+                            std::cout << "Added tag \"" << str << "\" to " << temp_name << std::endl;
+                        }
+                        else
+                        {
+                            std::cout << "This tag is already added." << std::endl;
+                        }
+                    }
+                }
+			}
+
+		std::cout << "Name does not match with any of the saved file name." << std::endl;
+		new_tag();
+    }
 }
 
 // 2 //
@@ -103,7 +142,7 @@ void open_path()
 	else
 	{
 		for (size_t i = 0;i < data.size();i++)
-			if (str == data[i]["Name"].get<std::string>())
+			if (str == data[i]["Name"])
 			{
 				std::cout << "Name match." << std::endl;
 				std::cout << "Opening..." << std::endl;
@@ -129,11 +168,19 @@ void view_a_path()
 	else
 	{
 		for (size_t i = 0;i < data.size();i++)
-			if (str == data[i]["Name"].get<std::string>())
+			if (str == data[i]["Name"])
 			{
 				std::cout << "Name: " << data[i]["Name"] << std::endl;
 				std::cout << "Path: " << data[i]["Path"] << std::endl;
-				std::cout << "Tag: " << data[i]["Tags"][0] << std::endl;
+				json &tags = data[i]["Tags"];
+				std::cout << "Tag: ";
+				for (size_t j = 0;j < tags.size();j++)
+                {
+                    std::cout << tags[j];
+                    if (j != tags.size() - 1)
+                        std::cout << ", ";
+                }
+                std::cout << std::endl;
 				return;
 			}
 
@@ -145,8 +192,8 @@ void view_a_path()
 // 3.2 //
 void view_all_path()
 {
-	std::cout << "Name \t\tPath \t\t\t\t\t\tTag" << std::endl;
-	std::cout << "--------------------------------------------------------------------------------" << std::endl;
+	std::cout << "Name \t\tPath" << std::endl;
+	std::cout << "-------------------------------------------------------------------------------------" << std::endl;
 
 	for (size_t i = 0;i < data.size();i++)
 	{
@@ -160,9 +207,11 @@ void view_all_path()
         // if the path length is longer than 66, the latter part is replaced with ...
         std::string _path = data[i]["Path"].get<std::string>();
         if (_path.length() > max_path_length_shown)
-            std::cout << _path.substr(0, max_path_length_shown) << "...\t";
+            std::cout << _path.substr(0, max_path_length_shown) << "..." << std::endl;
         else
         {
+            std::cout << _path << std::endl;
+            /*
             // (final tab position - first tab position) / 2
             if (_path.length() < 8)
                 std::cout << _path << "\t\t\t\t\t\t";
@@ -176,17 +225,52 @@ void view_all_path()
                 std::cout << _path << "\t\t";
             else
                 std::cout << _path << "\t";
+            */
         }
-
-        std::cout << data[i]["Tags"][0].get<std::string>() << std::endl;
 	}
-	std::cout << "Total: " << data.size() << std::endl;
+	std::cout << "Total: " << data.size() << " items" << std::endl;
 }
 
-// 3.3 //
+// 3.3
+void view_tag_path()
+{
+    std::cout << "Type the name of the path:" << std::endl;
+	ask();
+	if (cancel())
+		return;
+	else
+	{
+	    for (size_t i = 0;i < tag_list.size();i++)
+			if (str == tag_list.at(i))
+            {
+                size_t items = 0;
+                for (size_t j = 0;j < data.size();j++)
+                {
+                    json temp = data[j];
+                    if (std::find(temp["Tags"].begin(), temp["Tags"].end(), str) != temp["Tags"].end())
+                    {
+                        items++;
+                        std::string name = temp["Name"].get<std::string>();
+                        std::cout << "|" << name;
+
+                        if (name.length() < 8 - 1) // (final tab position - first tab position) / 2 - 1 because -1 is |
+                            std::cout << "\t\t";
+                        else
+                            std::cout << "\t";
+                    }
+                }
+                std::cout << std::endl << "Total: " << items << " items with tag " << str << "." << std::endl;
+                return;
+			}
+
+		std::cout << "Tag does not match with any of the path's tags." << std::endl;
+		view_a_path();
+	}
+}
+
+// 3.4 //
 void view_all_tag()
 {
-    // needs fixing
     for (size_t i = 0;i < tag_list.size();i++)
     {
         std::string tag = tag_list.at(i);
@@ -210,7 +294,7 @@ void rename_path()
 	else
 	{
 		for (size_t i = 0;i < data.size();i++)
-			if (str == data[i]["Name"].get<std::string>())
+			if (str == data[i]["Name"])
 			{
 				std::cout << "Name match." << std::endl;
 				std::cout << "Type the renamed path:" << std::endl;
@@ -244,7 +328,7 @@ void rename_name()
 	else
 	{
 		for (size_t i = 0;i < data.size();i++)
-			if (str == data[i]["Name"].get<std::string>())
+			if (str == data[i]["Name"])
 			{
 				std::cout << "Name match." << std::endl;
 
@@ -284,7 +368,6 @@ void rename_name()
 // 4.3 //
 void rename_path_tag()
 {
-    // needs fixing
 	std::cout << "Type the name of the path:" << std::endl;
 	ask();
 	if (cancel())
@@ -292,29 +375,60 @@ void rename_path_tag()
 	else
     {
 		for (size_t i = 0;i < data.size();i++)
-			if (str == data[i]["Name"].get<std::string>())
+			if (str == data[i]["Name"])
 			{
 				std::cout << "Name match." << std::endl;
 
+				// check if path has no tags
+                json &tags = data[i]["Tags"];
+				if (tags.size() == 1 && tags[0] == "(none)")
+                {
+                    std::cout << "This path has no tags. Returning to main menu..." << std::endl;
+                    return;
+                }
+
 				while (true)
                 {
-                    std::cout << "Type the renamed tag for this path:" << std::endl;
+                    std::cout << "Type the tag you want to rename:" << std::endl;
                     ask();
-
                     if (cancel())
                         return;
-                    else if (str.length() > max_tag_length)
+                    else if (str == "(none)")
                     {
-                        std::cout << "Tag name shouldn't have more than 13 characters. Please rename." << std::endl;
+                        std::cout << "You cannot rename tag (none)." << std::endl;
                     }
                     else
                     {
-                        data[i]["Tags"][0] = str;
+                        json::iterator found = std::find(tags.begin(), tags.end(), str);
+                        if (found != tags.end())
+                        {
+                            std::cout << "Tag match." << std::endl;
+                            std::cout << "Type the renamed tag for this path:" << std::endl;
+                            ask();
+                            if (cancel())
+                                return;
+                            else if (str.length() > max_tag_length)
+                            {
+                                std::cout << "Tag name shouldn't have more than 13 characters. Please rename." << std::endl;
+                            }
+                            else if (std::find(tags.begin(), tags.end(), str) != tags.end())
+                            {
+                                std::cout << "This tag is already added. Please rename." << std::endl;
+                            }
+                            else
+                            {
+                                *found = str;
 
-                        save_path();
+                                save_path();
 
-                        std::cout << "Successfully renamed tag for this path." << std::endl;
-                        return;
+                                std::cout << "Successfully renamed tag." << std::endl;
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            std::cout << "Tag does not match with any of the path's tags." << std::endl;
+                        }
                     }
                 }
 			}
@@ -331,6 +445,11 @@ void rename_tag()
     ask();
 	if (cancel())
 		return;
+    else if (str == "(none)")
+    {
+        std::cout << "You cannot rename tag (none)." << std::endl;
+        rename_tag();
+    }
 	else
     {
         for (size_t i = 0;i < tag_list.size();i++)
@@ -348,11 +467,21 @@ void rename_tag()
                     {
                         std::cout << "Tag name shouldn't have more than 13 characters. Please rename." << std::endl;
                     }
+                    else if (std::find(tag_list.begin(), tag_list.end(), str) != tag_list.end())
+                    {
+                        std::cout << "This tag already exists. Please rename." << std::endl;
+                    }
                     else
                     {
                         for (size_t j = 0;j < data.size();j++)
-                            if (tag_list.at(i) == data[j]["Tags"][0].get<std::string>())
-                                data[j]["Tags"][0] = str;
+                        {
+                            json &tags = data[j]["Tags"];
+                            json::iterator found = std::find(tags.begin(), tags.end(), tag_list.at(i));
+                            if (found != tags.end())
+                            {
+                                *found = str;
+                            }
+                        }
                         tag_list.at(i) = str;
 
                         save_path();
@@ -378,7 +507,7 @@ void delete_path()
 	else
 	{
 		for (size_t i = 0;i < data.size();i++)
-			if (str == data[i]["Name"].get<std::string>())
+			if (str == data[i]["Name"])
 			{
 				std::cout << "Name match." << std::endl;
 				std::cout << "Deleting...";
@@ -398,6 +527,71 @@ void delete_path()
 }
 
 // 5.2 //
+void delete_path_tag()
+{
+	std::cout << "Type the name of the path:" << std::endl;
+	ask();
+	if (cancel())
+		return;
+	else
+    {
+        for (size_t i = 0;i < data.size();i++)
+			if (str == data[i]["Name"])
+			{
+			    std::cout << "Name match." << std::endl;
+
+			    // check if path has no tags
+                json &tags = data[i]["Tags"];
+				if (tags.size() == 1 && tags[0] == "(none)")
+                {
+                    std::cout << "This path has no tags. Returning to main menu..." << std::endl;
+                    return;
+                }
+
+				while (true)
+                {
+                    std::cout << "Type the tag you want to delete:" << std::endl;
+                    ask();
+                    if (cancel())
+                        return;
+                    else if (str == "(none)")
+                    {
+                        std::cout << "You cannot delete tag (none)." << std::endl;
+                    }
+                    else
+                    {
+                        json::iterator found = std::find(tags.begin(), tags.end(), str);
+                        if (found != tags.end())
+                        {
+                            std::cout << "Tag match." << std::endl;
+                            std::cout << "Deleting...";
+
+                            tags.erase(found);
+                            if (tags.size() == 0)
+                            {
+                                tags[0] = "(none)";
+                            }
+
+                            align();
+                            save_path();
+
+                            std::cout << std::endl << "Successfully deleted tag." << std::endl;
+                            return;
+                        }
+                        else
+                        {
+                            std::cout << "Tag does not match with any of the path's tags." << std::endl;
+                        }
+                    }
+                }
+            }
+    }
+
+    std::cout << "Name does not match with any of the saved path name." << std::endl;
+    rename_path_tag();
+}
+
+// 5.3 //
 void delete_tag()
 {
     std::cout << "Type the tag you want to delete:" << std::endl;
@@ -414,8 +608,18 @@ void delete_tag()
                     std::cout << "Deleting...";
 
                     for (size_t j = 0;j < data.size();j++)
-                        if (data[j]["Tags"][0].get<std::string>() == tag_list[i])
-                            data[j]["Tags"][0] = "(none)";
+                    {
+                        json &tags = data[j]["Tags"];
+                        json::iterator found = std::find(tags.begin(), tags.end(), str);
+                        if (found != tags.end())
+                        {
+                            tags.erase(found);
+                            if (tags.empty())
+                            {
+                                tags[0] = "(none)";
+                            }
+                        }
+                    }
 
                     align();
                     save_path();
@@ -455,112 +659,5 @@ void search_internet()
             std::cout << "Search engine is not either available or supported." << std::endl;
             search_internet();
         }
-    }
-}
-
-// 9 //
-// system("cls");
-
-// old version function //
-void about()
-{
-	system("cls");
-
-	std::cout << "Hoang Cao Minh product" << std::endl;
-	std::cout << "This program is intended to link many files and folders." << std::endl;
-	std::cout << "In other words, shortcut of more than only 1 item." << std::endl;
-}
-//////////////////////////
-
-void submenu_view()
-{
-    std::cout << std::endl;
-    std::cout << "View submenu:" << std::endl;
-	std::cout << "[1] View an element's properties" << std::endl;
-	std::cout << "[2] View all elements" << std::endl;
-	std::cout << "[3] View all existing tags" << std::endl;
-	std::cout << "[0] Back to main menu" << std::endl;
-
-	ask();
-	if (str == "1")
-    {
-        view_a_path();
-    }
-    else if (str == "2")
-    {
-        view_all_path();
-    }
-    else if (str == "3")
-    {
-        view_all_tag();
-    }
-    else if (str == "0")
-        return;
-    else
-    {
-		std::cout << "\"" << str << "\"" << "is not recognized as a command." << std::endl;
-		submenu_view();
-    }
-}
-
-void submenu_rename()
-{
-    std::cout << std::endl;
-    std::cout << "Rename submenu:" << std::endl;
-	std::cout << "[1] Rename an element's name" << std::endl;
-	std::cout << "[2] Rename an element's path" << std::endl;
-	std::cout << "[3] Rename an element's tag" << std::endl;
-	std::cout << "[4] Rename an existing tag" << std::endl;
-	std::cout << "[0] Back to main menu" << std::endl;
-
-	ask();
-    if (str == "1")
-    {
-        rename_name();
-    }
-	else if (str == "2")
-    {
-        rename_path();
-    }
-    else if (str == "3")
-    {
-        rename_path_tag();
-    }
-    else if (str == "4")
-    {
-        rename_tag();
-    }
-    else if (str == "0")
-        return;
-    else
-    {
-		std::cout << "\"" << str << "\"" << "is not recognized as a command." << std::endl;
-		submenu_rename();
-    }
-}
-
-void submenu_delete()
-{
-    std::cout << std::endl;
-    std::cout << "Delete submenu:" << std::endl;
-	std::cout << "[1] Delete an existing element" << std::endl;
-	std::cout << "[2] Delete an existing tag" << std::endl;
-	std::cout << "[0] Back to main menu" << std::endl;
-
-	ask();
-	if (str == "1")
-    {
-        delete_path();
-    }
-    else if (str == "2")
-    {
-        delete_tag();
-    }
-    else if (str == "0")
-        return;
-    else
-    {
-		std::cout << "\"" << str << "\"" << "is not recognized as a command." << std::endl;
-		submenu_delete();
     }
 }
