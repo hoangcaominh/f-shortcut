@@ -2,7 +2,7 @@
 #include <vector>
 #include <fstream>
 #include <algorithm>
-#include <json.hpp>
+#include "json.hpp"
 
 #define DEBUG std::cout << "debug" << std::endl;
 
@@ -73,6 +73,7 @@ void scan_path()
 	if (f.fail())
     {
         std::fstream f("data.json", std::ios::out);
+        f << "[]";
         f.close();
 
         std::cout << std::endl;
@@ -85,6 +86,12 @@ void scan_path()
 	std::cout << "Loading/Updating file..." << std::endl;
 
 	f >> data;
+	if (data.empty())
+    {
+        data[0]["Name"] = "Notepad";
+        data[0]["Path"] = "notepad";
+        data[0]["Tags"][0] = "(none)";
+    }
 
 	f.close();
 
