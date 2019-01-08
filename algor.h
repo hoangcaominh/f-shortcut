@@ -44,6 +44,12 @@ void string_fix(std::string &s)
 // string_compare between 2 path names
 void align()
 {
+    for (size_t i = 0;i < data.size() - 1;i++)
+    {
+        json &tags = data[i]["Tags"];
+        std::sort(tags.begin(), tags.end(), string_compare);
+    }
+
 	for (size_t i = 0;i < data.size() - 1;i++)
 	{
 		for (size_t j = i+1;j < data.size();j++)
@@ -83,13 +89,17 @@ void scan_path()
 	f.close();
 
 	// add tags to tag_list
+	tag_list.clear();
 	for (size_t i = 0;i < data.size();i++)
     {
-        std::string tag = data[i]["Tags"][0].get<std::string>();
-        if (!std::binary_search(tag_list.begin(), tag_list.end(), tag, string_compare))
+        for (size_t j = 0;j < data[i]["Tags"].size();j++)
         {
-            tag_list.push_back(tag);
-            std::sort(tag_list.begin(), tag_list.end(), string_compare);
+            std::string tag = data[i]["Tags"][j].get<std::string>();
+            if (std::find(tag_list.begin(), tag_list.end(), tag) == tag_list.end())
+            {
+                tag_list.push_back(tag);
+                std::sort(tag_list.begin(), tag_list.end(), string_compare);
+            }
         }
     }
     align();
