@@ -176,13 +176,13 @@ void view_a_path()
             for (size_t i = 0;i < data.size();i++)
                 if (str == data[i]["Name"])
                 {
-                    std::cout << "Name: " << data[i]["Name"] << std::endl;
-                    std::cout << "Path: " << data[i]["Path"] << std::endl;
+                    std::cout << "Name: " << data[i]["Name"].get<std::string>() << std::endl;
+                    std::cout << "Path: " << data[i]["Path"].get<std::string>() << std::endl;
                     json &tags = data[i]["Tags"];
-                    std::cout << "Tag: ";
+                    std::cout << "Tags: ";
                     for (size_t j = 0;j < tags.size();j++)
                     {
-                        std::cout << tags[j];
+                        std::cout << tags[j].get<std::string>();
                         if (j != tags.size() - 1)
                             std::cout << ", ";
                     }
