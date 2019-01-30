@@ -6,7 +6,6 @@
 
 #define DEBUG std::cout << "debug" << std::endl;
 
-#define max_path_number 2000
 using json = nlohmann::json;
 
 std::vector<std::string> tag_list;
@@ -30,6 +29,14 @@ bool string_compare(std::string s1, std::string s2)
 			ss2 += s2[i];
 
     return ss1 < ss2;
+}
+
+// check if a string name is valid
+const std::string non_char = "\\/:*?\"<>|";
+
+bool is_string_valid(std::string &s)
+{
+    return s.find_first_of(non_char) == std::string::npos;
 }
 
 void string_fix(std::string &s)
@@ -66,26 +73,38 @@ void align()
 	std::sort(tag_list.begin(), tag_list.end(), string_compare);
 }
 
+void new_file()
+{
+    std::fstream f("data.json", std::ios::out);
+    f << "[]";
+    f.close();
+}
+
 void scan_path()
 {
 	std::fstream f("data.json", std::ios::in);
 
 	if (f.fail())
     {
-        std::fstream f("data.json", std::ios::out);
-        f << "[]";
-        f.close();
-
+        new_file();
         std::cout << std::endl;
-        std::cout << "File not found, created a new one." << std::endl;
+        std::cout << "Data file not found, created a new one." << std::endl;
+        return;
+    }
+    else if (f.peek() == std::ifstream::traits_type::eof())
+    {
+        new_file();
+        std::cout << std::endl;
+        std::cout << "Attempted to open an empty data file." << std::endl;
+        std::cout << "Deleted invalid file and created a new one." << std::endl;
         return;
     }
 
 	// loading file
 	std::cout << std::endl;
-	std::cout << "Loading/Updating file..." << std::endl;
+	std::cout << "Loading/Updating data file..." << std::endl;
 
-	f >> data;
+    f >> data;
 	if (data.empty())
     {
         data[0]["Name"] = "Notepad";
@@ -112,7 +131,7 @@ void scan_path()
     align();
 
 	// finishing loading
-	std::cout << "Successully loaded file." << std::endl;
+	std::cout << "Successully loaded data file." << std::endl;
 }
 
 void save_path()
@@ -124,7 +143,7 @@ void save_path()
 	f.close();
 }
 
-bool already_exist(std::string s)
+bool already_exist(std::string &s)
 {
     for (size_t i = 0;i < data.size();i++)
         if (data[i]["Name"].get<std::string>() == s)
@@ -139,9 +158,10 @@ struct url_symbol_list
 {
     char symbol;
     std::string id;
-} url_symbol[url_symbol_number] = { {' ', "%20"}, {'+', "%2B"}, {'%', "%25"}, {'#', "%23"}, {'&', "%26"}, {'\'', "%27"},
-                                    {',', "%2C"}, {'.', "%2E"}, {'/', "%2F"}, {':', "%3A"}, {';', "%3B"}, {'<', "%3C"},
-                                    {'=', "&3D"}, {'>', "%3E"} };
+};
+const url_symbol_list url_symbol[url_symbol_number] = { {' ', "%20"}, {'+', "%2B"}, {'%', "%25"}, {'#', "%23"},
+                                    {'&', "%26"}, {'\'', "%27"}, {',', "%2C"}, {'.', "%2E"}, {'/', "%2F"},
+                                    {':', "%3A"}, {';', "%3B"}, {'<', "%3C"}, {'=', "&3D"}, {'>', "%3E"} };
 
 std::string query_convert(std::string query)
 {

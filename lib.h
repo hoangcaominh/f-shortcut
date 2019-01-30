@@ -58,6 +58,10 @@ void new_path()
             {
                 std::cout << "This name has already existed. Please rename or delete the existed one."  << std::endl;
             }
+            else if (!is_string_valid(str))
+            {
+                std::cout << "A name can't contain any of the following characters: \\ / : * ? \" < > |" << std::endl;
+            }
             else
             {
                 // Name is valid. Break the infinite loop
@@ -102,6 +106,10 @@ void new_tag()
                         {
                             std::cout << "Stopped adding. Returning to main menu..." << std::endl;
                             return;
+                        }
+                        else if (!is_string_valid(str))
+                        {
+                            std::cout << "A tag can't contain any of the following characters: \\ / : * ? \" < > |" << std::endl;
                         }
                         else
                         {
@@ -359,6 +367,10 @@ void rename_name()
                         {
                             std::cout << "This name has already existed. Please rename or delete the existed one."  << std::endl;
                         }
+                        else if (!is_string_valid(str))
+                        {
+                            std::cout << "A name can't contain any of the following characters: \\ / : * ? \" < > |" << std::endl;
+                        }
                         else
                         {
                             data[i]["Name"] = str;
@@ -410,6 +422,10 @@ void rename_path_tag()
                         else if (str == "(none)")
                         {
                             std::cout << "You cannot rename tag (none)." << std::endl;
+                        }
+                        else if (!is_string_valid(str))
+                        {
+                            std::cout << "A tag can't contain any of the following characters: \\ / : * ? \" < > |" << std::endl;
                         }
                         else
                         {
@@ -485,6 +501,10 @@ void rename_tag()
                         else if (std::find(tag_list.begin(), tag_list.end(), str) != tag_list.end())
                         {
                             std::cout << "This tag already exists. Please rename." << std::endl;
+                        }
+                        else if (!is_string_valid(str))
+                        {
+                            std::cout << "A tag can't contain any of the following characters: \\ / : * ? \" < > |" << std::endl;
                         }
                         else
                         {
@@ -678,7 +698,6 @@ void search_internet()
         else
         {
             std::cout << "Search engine is not either available or supported." << std::endl;
-            search_internet();
         }
     }
 }

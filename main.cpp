@@ -1,13 +1,15 @@
 #include "lib.h"
 
-// old version function //
 void about()
 {
-	system("cls");
-
+    std::cout << std::endl;
 	std::cout << "Hoang Cao Minh product" << std::endl;
-	std::cout << "This program is intended to link many files and folders." << std::endl;
-	std::cout << "In other words, shortcut of more than only 1 item." << std::endl;
+	std::cout << "This program is written to store file and folder paths and execute them." << std::endl;
+	std::cout << "This even works for URLs so you can go to the page you want without opening a browser first." << std::endl;
+	std::cout << "This program is similar to a shortcut, and it works as many shortcuts." << std::endl;
+	std::cout << "You can add, view, rename and delete items that store name, path and tags." << std::endl;
+	std::cout << "Paths with tags can help you search efficiently." << std::endl;
+	std::cout << "Additionally, you can search the Internet directly from this program as well." << std::endl;
 }
 
 void submenu_new()
@@ -157,6 +159,7 @@ int main(int argc, char* argv[])
         std::cout << "[5] Delete submenu" << std::endl;
         std::cout << "[6] Search the Internet" << std::endl;
         std::cout << "[7] Clear history" << std::endl;
+        std::cout << "[8] About" << std::endl;
         std::cout << "[0] Exit" << std::endl;
         ask();
         if (str == "1")
@@ -186,6 +189,10 @@ int main(int argc, char* argv[])
         else if (str == "7")
         {
             system("cls");
+        }
+        else if (str == "8")
+        {
+            about();
         }
         else if (str == "0")
             break;
