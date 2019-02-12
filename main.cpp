@@ -7,7 +7,7 @@ void about()
 	std::cout << "This program is written to store file and folder paths and execute them." << std::endl;
 	std::cout << "This even works for URLs so you can go to the page you want without opening a browser first." << std::endl;
 	std::cout << "This program is similar to a shortcut, and it works as many shortcuts." << std::endl;
-	std::cout << "You can add, view, rename and delete items that store name, path and tags." << std::endl;
+	std::cout << "You can add, view, modify and delete items that store name, path and tags." << std::endl;
 	std::cout << "Paths with tags can help you search efficiently." << std::endl;
 	std::cout << "Additionally, you can search the Internet directly from this program as well." << std::endl;
 }
@@ -74,39 +74,39 @@ void submenu_view()
     }
 }
 
-void submenu_rename()
+void submenu_modify()
 {
     std::cout << std::endl;
-    std::cout << "Rename submenu:" << std::endl;
-	std::cout << "[1] Rename an element's name" << std::endl;
-	std::cout << "[2] Rename an element's path" << std::endl;
-	std::cout << "[3] Rename an element's tag" << std::endl;
-	std::cout << "[4] Rename an existing tag" << std::endl;
+    std::cout << "Modify submenu:" << std::endl;
+	std::cout << "[1] Modify an element's name" << std::endl;
+	std::cout << "[2] Modify an element's path" << std::endl;
+	std::cout << "[3] Modify an element's tag" << std::endl;
+	std::cout << "[4] Modify an existing tag" << std::endl;
 	std::cout << "[0] Back to main menu" << std::endl;
 
 	ask();
     if (str == "1")
     {
-        rename_name();
+        modify_name();
     }
 	else if (str == "2")
     {
-        rename_path();
+        modify_path();
     }
     else if (str == "3")
     {
-        rename_path_tag();
+        modify_path_tag();
     }
     else if (str == "4")
     {
-        rename_tag();
+        modify_tag();
     }
     else if (str == "0")
         return;
     else
     {
 		std::cout << "\"" << str << "\"" << "is not recognized as a command." << std::endl;
-		submenu_rename();
+		submenu_modify();
     }
 }
 
@@ -155,7 +155,7 @@ int main(int argc, char* argv[])
         std::cout << "[1] New submenu" << std::endl;
         std::cout << "[2] Open" << std::endl;
         std::cout << "[3] View submenu" << std::endl;
-        std::cout << "[4] Rename submenu" << std::endl;
+        std::cout << "[4] Modify submenu" << std::endl;
         std::cout << "[5] Delete submenu" << std::endl;
         std::cout << "[6] Search the Internet" << std::endl;
         std::cout << "[7] Clear history" << std::endl;
@@ -176,7 +176,7 @@ int main(int argc, char* argv[])
         }
         else if (str == "4")
         {
-            submenu_rename();
+            submenu_modify();
         }
         else if (str == "5")
         {

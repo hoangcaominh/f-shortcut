@@ -301,7 +301,7 @@ void view_all_tag()
 }
 
 // 4.1 //
-void rename_path()
+void modify_path()
 {
     while (true)
     {
@@ -315,7 +315,7 @@ void rename_path()
                 if (str == data[i]["Name"])
                 {
                     std::cout << "Name match." << std::endl;
-                    std::cout << "Type the renamed path:" << std::endl;
+                    std::cout << "Type the modified path:" << std::endl;
                     ask();
                     if (cancel())
                         return;
@@ -326,7 +326,7 @@ void rename_path()
                         align();
                         save_path();
 
-                        std::cout << "Successfully renamed name." << std::endl;
+                        std::cout << "Successfully modified name." << std::endl;
                         return;
                     }
                 }
@@ -337,7 +337,7 @@ void rename_path()
 }
 
 // 4.2 //
-void rename_name()
+void modify_name()
 {
 	while (true)
     {
@@ -354,7 +354,7 @@ void rename_name()
 
                     while (true)
                     {
-                        std::cout << "Type the renamed name:" << std::endl;
+                        std::cout << "Type the modified name:" << std::endl;
                         ask();
 
                         if (cancel())
@@ -378,7 +378,7 @@ void rename_name()
                             align();
                             save_path();
 
-                            std::cout << "Successfully renamed path." << std::endl;
+                            std::cout << "Successfully modified path." << std::endl;
                             return;
                         }
                     }
@@ -390,7 +390,7 @@ void rename_name()
 }
 
 // 4.3 //
-void rename_path_tag()
+void modify_path_tag()
 {
 	while (true)
     {
@@ -415,13 +415,13 @@ void rename_path_tag()
 
                     while (true)
                     {
-                        std::cout << "Type the tag you want to rename:" << std::endl;
+                        std::cout << "Type the tag you want to modify:" << std::endl;
                         ask();
                         if (cancel())
                             return;
                         else if (str == "(none)")
                         {
-                            std::cout << "You cannot rename tag (none)." << std::endl;
+                            std::cout << "You cannot modify tag (none)." << std::endl;
                         }
                         else if (!is_string_valid(str))
                         {
@@ -433,7 +433,7 @@ void rename_path_tag()
                             if (found != tags.end())
                             {
                                 std::cout << "Tag match." << std::endl;
-                                std::cout << "Type the renamed tag for this path:" << std::endl;
+                                std::cout << "Type the modified tag for this path:" << std::endl;
                                 ask();
                                 if (cancel())
                                     return;
@@ -451,7 +451,7 @@ void rename_path_tag()
 
                                     save_path();
 
-                                    std::cout << "Successfully renamed tag." << std::endl;
+                                    std::cout << "Successfully modified tag." << std::endl;
                                     return;
                                 }
                             }
@@ -469,7 +469,7 @@ void rename_path_tag()
 }
 
 // 4.4 //
-void rename_tag()
+void modify_tag()
 {
     while (true)
     {
@@ -479,7 +479,7 @@ void rename_tag()
             return;
         else if (str == "(none)")
         {
-            std::cout << "You cannot rename tag (none)." << std::endl;
+            std::cout << "You cannot modify tag (none)." << std::endl;
         }
         else
         {
@@ -489,7 +489,7 @@ void rename_tag()
                     std::cout << "Tag match." << std::endl;
                     while (true)
                     {
-                        std::cout << "Type the renamed tag:" << std::endl;
+                        std::cout << "Type the modified tag:" << std::endl;
                         ask();
 
                         if (cancel())
@@ -521,7 +521,7 @@ void rename_tag()
 
                             save_path();
 
-                            std::cout << "Successfully renamed existing tag." << std::endl;
+                            std::cout << "Successfully modified existing tag." << std::endl;
                             return;
                         }
                     }
